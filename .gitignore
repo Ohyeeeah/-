@@ -4,4 +4,4 @@ dist/
 .playwright-cli/
 output/
 .impeccable/review/
-public/fonts/*/
+local-font-archive/

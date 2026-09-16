@@ -6,7 +6,7 @@
 @property --progress-value { syntax: '<number>'; inherits: true; initial-value: 0; }
 
 :root {
-  font-family: var(--font-local-cascadia), 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-family: var(--font-ui);
   color: var(--ink);
   background: var(--paper);
   font-synthesis: none;
@@ -144,7 +144,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--focus); out
 .topbar, main { position: relative; z-index: 1; }
 .day-layout > :not(.night-speedlines) { position: relative; z-index: 1; }
 .topbar { min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-.brand { border: 0; background: transparent; padding: 8px 0; display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-local-yyb), var(--font-local-cascadia), sans-serif; font-weight: 700; letter-spacing: -0.02em; cursor: pointer; }
+.brand { border: 0; background: transparent; padding: 8px 0; display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-ui); font-weight: 700; letter-spacing: -0.02em; cursor: pointer; }
 .brand-dot { width: 13px; height: 13px; background: var(--coral); border-radius: 50% 50% 45% 55%; box-shadow: 8px -5px 0 -3px var(--sky-strong); transform: rotate(-12deg); }
 .top-actions { display: flex; align-items: center; gap: 6px; }
 .icon-button { width: 44px; height: 44px; border: 0; border-radius: 50%; background: transparent; display: grid; place-items: center; cursor: pointer; transition: background 180ms ease, transform 180ms cubic-bezier(.2,.8,.2,1); }
@@ -164,7 +164,7 @@ main { display: grid; grid-template-columns: minmax(360px, 460px) minmax(0, 1fr)
 .date-chip { border: 0; background: transparent; display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; font-weight: 600; cursor: pointer; }
 .date-chip svg { color: var(--coral); }
 .intro-copy { margin-top: 38px; }
-.intro-copy h1 { margin: 0; max-width: 13ch; font-family: var(--font-local-wansong), var(--font-local-matisse), serif; font-size: clamp(2.8rem, 4.3vw, 5.2rem); font-weight: 400; line-height: 1.08; letter-spacing: -0.025em; text-wrap: balance; }
+.intro-copy h1 { margin: 0; max-width: 13ch; font-family: var(--font-display); font-size: clamp(2.8rem, 4.3vw, 5.2rem); font-weight: 400; line-height: 1.08; letter-spacing: -0.025em; text-wrap: balance; }
 .intro-copy p { max-width: 35ch; margin: 18px 0 0; color: var(--muted); font-size: clamp(.95rem, 1vw, 1.08rem); line-height: 1.75; }
 .note-pad { margin-top: 28px; padding: 17px 19px 15px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
 .note-pad:focus-within { border-color: color-mix(in srgb, var(--sky-strong) 70%, var(--line)); box-shadow: 0 12px 34px color-mix(in srgb, var(--floating-shadow) 45%, transparent); }
@@ -240,7 +240,7 @@ main { display: grid; grid-template-columns: minmax(360px, 460px) minmax(0, 1fr)
 .check-mark { flex: none; width: 22px; height: 22px; border: 1.5px solid var(--card-ink); border-radius: 7px; display: grid; place-items: center; margin-top: 1px; color: var(--card-ink); }
 .check-mark svg { width: 14px; height: 14px; }
 .task-copy { display: grid; gap: 4px; min-width: 0; }
-.task-copy strong { color: var(--card-ink); font-family: var(--font-local-yyb), var(--font-local-cascadia), sans-serif; font-size: 1.04rem; font-weight: 400; line-height: 1.38; letter-spacing: -0.01em; }
+.task-copy strong { color: var(--card-ink); font-family: var(--font-ui); font-size: 1.04rem; font-weight: 500; line-height: 1.38; letter-spacing: -0.01em; }
 .task-copy small { color: var(--card-muted); line-height: 1.45; }
 .task-copy em { color: var(--card-muted); font-size: .72rem; font-style: normal; }
 .task-tools { padding: 0 8px 4px 44px; display: flex; justify-content: space-between; align-items: center; gap: 4px; }
@@ -280,7 +280,7 @@ main { display: grid; grid-template-columns: minmax(360px, 460px) minmax(0, 1fr)
 .history-layout { display: block; padding-top: clamp(54px, 8vh, 92px); }
 .history-view { width: min(100%, 920px); margin: 0 auto; }
 .history-heading { display: flex; align-items: end; justify-content: space-between; gap: 32px; padding-bottom: 30px; border-bottom: 1px solid var(--line); }
-.history-heading h1 { margin: 0; font-family: var(--font-local-wansong), var(--font-local-matisse), serif; font-size: clamp(2.8rem, 5vw, 4.8rem); font-weight: 400; line-height: 1.04; letter-spacing: -.025em; }
+.history-heading h1 { margin: 0; font-family: var(--font-display); font-size: clamp(2.8rem, 5vw, 4.8rem); font-weight: 400; line-height: 1.04; letter-spacing: -.025em; }
 .history-heading p { margin: 12px 0 0; color: var(--muted); line-height: 1.7; }
 .history-heading > span { flex: none; padding-bottom: 7px; color: var(--muted); font-size: .78rem; font-variant-numeric: tabular-nums; }
 .history-list { display: grid; }

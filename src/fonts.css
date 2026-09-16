@@ -1,76 +1,22 @@
-/* Local-only font registrations. The binary files are excluded from Git. */
+/* Public webfont set: both files are shipped with their SIL OFL 1.1 licenses. */
 
 @font-face {
-  font-family: 'Local Matisse Pro';
-  src: url('/fonts/cjk-serif/matisse-pro-eb.otf') format('opentype');
-  font-weight: 800;
+  font-family: 'Cascadia Next SC';
+  src: url('/fonts/open-source/CascadiaNextSC.wght.ttf') format('truetype');
+  font-weight: 200 700;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Local Aa Wansong';
-  src: url('/fonts/cjk-serif/aa-wansong-web.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Local Ruizi Rock Song';
-  src: url('/fonts/cjk-serif/ruizi-rock-song.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Local Cascadia Next SC';
-  src: url('/fonts/sans-serif/cascadia-next-sc.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Local Dela Gothic One';
-  src: url('/fonts/display/dela-gothic-one.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Local Teguse Kanaka';
-  src: url('/fonts/handwriting/teguse-kanaka.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Local Quinttor';
-  src: url('/fonts/latin-display/quinttor-regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Local YYB';
-  src: url('/fonts/unclassified/yyb.ttf') format('truetype');
+  font-family: 'Dela Gothic One';
+  src: url('/fonts/open-source/DelaGothicOne-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 :root {
-  --font-local-matisse: 'Local Matisse Pro', serif;
-  --font-local-wansong: 'Local Aa Wansong', serif;
-  --font-local-ruizi: 'Local Ruizi Rock Song', serif;
-  --font-local-cascadia: 'Local Cascadia Next SC', sans-serif;
-  --font-local-dela: 'Local Dela Gothic One', sans-serif;
-  --font-local-teguse: 'Local Teguse Kanaka', cursive;
-  --font-local-quinttor: 'Local Quinttor', serif;
-  --font-local-yyb: 'Local YYB', sans-serif;
+  --font-ui: 'Cascadia Next SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-display: 'Dela Gothic One', 'Cascadia Next SC', sans-serif;
 }

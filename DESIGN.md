@@ -17,7 +17,7 @@
 
 ## Typography
 
-问候标题使用修复后的本地 Aa顽宋，以厚实、俏皮且带手工切角的展示宋体形成首屏记忆点，Matisse Pro EB 作为后备；正文与界面数字使用 Cascadia Next SC，任务标题使用更紧凑的 YYB。标题的厚度由宽屏留白、舒展行宽和克制字距平衡，正文使用正常字重与舒展行距，数字统一使用 tabular numerals。Aa顽宋网页副本已移除 Chromium 不支持的 `vhea/vmtx` 纵向度量表，横排显示不受影响。上述字体仅限用户本机预览，公开部署前必须确认授权或替换。
+问候标题使用 Dela Gothic One，以厚实、俏皮且稳定的展示黑体形成首屏记忆点；正文、界面数字与任务标题使用 Cascadia Next SC。标题的厚度由宽屏留白、舒展行宽和克制字距平衡，正文使用正常字重与舒展行距，数字统一使用 tabular numerals。两款字体均随项目附带 SIL Open Font License 1.1，可公开部署。
 
 ## Layout
 
