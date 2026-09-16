@@ -237,14 +237,9 @@ export default function App() {
   const [colorful, setColorful] = useState(() => localStorage.getItem('peigens-color-mode') === 'colorful')
   const [notice, setNotice] = useState('')
   const [now, setNow] = useState(() => new Date())
-  const [focusedTaskId, setFocusedTaskId] = useState<string>()
   const [dailyNotes, setDailyNotes] = useState<Record<string, string>>(loadNotes)
   const [historyOpen, setHistoryOpen] = useState(false)
   const importRef = useRef<HTMLInputElement>(null)
-  const timelineRef = useRef<HTMLElement>(null)
-  const scrollFrameRef = useRef<number | null>(null)
-  const motionFrameRef = useRef<number | null>(null)
-  const motionVelocityRef = useRef(0)
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks))
@@ -263,11 +258,6 @@ export default function App() {
     document.documentElement.dataset.color = colorful ? 'colorful' : 'restrained'
     localStorage.setItem('peigens-color-mode', colorful ? 'colorful' : 'restrained')
   }, [colorful])
-
-  useEffect(() => () => {
-    if (scrollFrameRef.current !== null) window.cancelAnimationFrame(scrollFrameRef.current)
-    if (motionFrameRef.current !== null) window.cancelAnimationFrame(motionFrameRef.current)
-  }, [])
 
   useEffect(() => {
     const refreshDay = () => {
@@ -295,8 +285,6 @@ export default function App() {
   const nextTaskId = activeDate === todayKey()
     ? (dayTasks.find((task) => !task.done && task.time >= nowTime) ?? dayTasks.find((task) => !task.done) ?? dayTasks.at(-1))?.id
     : (dayTasks.find((task) => !task.done) ?? dayTasks[0])?.id
-  const visibleFocusId = focusedTaskId && dayTasks.some((task) => task.id === focusedTaskId) ? focusedTaskId : nextTaskId
-  const focusIndex = dayTasks.findIndex((task) => task.id === visibleFocusId)
   const today = todayKey()
   const visibleDates = [offsetDate(today, -1), today, offsetDate(today, 1)]
   const visibleDateIndex = visibleDates.indexOf(activeDate)
@@ -316,126 +304,6 @@ export default function App() {
     setHistoryOpen(false)
     setActiveDate(todayKey())
   }
-
-  const timelineFocusOffset = (timeline: HTMLElement) => {
-    const anchor = timeline.parentElement?.querySelector<HTMLElement>('.focus-anchor')
-    return anchor?.offsetTop ?? timeline.clientHeight / 2
-  }
-
-  const centeredTop = (timeline: HTMLElement, row: HTMLElement) => {
-    const rawTop = row.offsetTop + row.offsetHeight / 2 - timelineFocusOffset(timeline)
-    return Math.max(0, Math.min(rawTop, timeline.scrollHeight - timeline.clientHeight))
-  }
-
-  useEffect(() => {
-    const timeline = timelineRef.current
-    if (!timeline || !nextTaskId) return
-    setFocusedTaskId(nextTaskId)
-    let cancelled = false
-    const centerFocusedTask = () => {
-      if (cancelled) return
-      const focused = timeline.querySelector<HTMLElement>('[data-time-focus="true"]')
-      if (!focused) return
-      const top = centeredTop(timeline, focused)
-      timeline.scrollTo({ top, behavior: 'auto' })
-    }
-    const frame = window.requestAnimationFrame(centerFocusedTask)
-    document.fonts.ready.then(centerFocusedTask)
-    return () => {
-      cancelled = true
-      window.cancelAnimationFrame(frame)
-    }
-  }, [nextTaskId, dayTasks.length])
-
-  const updateScrollFocus = () => {
-    if (scrollFrameRef.current !== null) return
-    scrollFrameRef.current = window.requestAnimationFrame(() => {
-      scrollFrameRef.current = null
-      const currentTimeline = timelineRef.current
-      if (!currentTimeline) return
-      const rows = Array.from(currentTimeline.querySelectorAll<HTMLElement>('.task-row'))
-      if (!rows.length) return
-      const center = currentTimeline.scrollTop + timelineFocusOffset(currentTimeline)
-      let closest: HTMLElement | undefined
-      let closestDistance = Number.POSITIVE_INFINITY
-
-      rows.forEach((row) => {
-        const rowCenter = row.offsetTop + row.offsetHeight / 2
-        const distance = Math.abs(rowCenter - center)
-        const steps = distance / Math.max(row.offsetHeight, 1)
-        const scale = Math.max(.76, 1 - steps * .09)
-        const opacity = Math.max(.3, 1 - steps * .28)
-        row.style.setProperty('--focus-scale', scale.toFixed(3))
-        row.style.setProperty('--focus-opacity', opacity.toFixed(3))
-        if (distance < closestDistance) {
-          closest = row
-          closestDistance = distance
-        }
-      })
-
-      const closestId = closest?.dataset.taskId
-      if (closestId) setFocusedTaskId((current) => current === closestId ? current : closestId)
-    })
-  }
-
-  const advanceTimelineMotion = () => {
-    motionFrameRef.current = null
-    const timeline = timelineRef.current
-    if (!timeline) return
-
-    const velocity = motionVelocityRef.current * .84
-    if (Math.abs(velocity) < .18) {
-      motionVelocityRef.current = 0
-      timeline.classList.remove('is-moving')
-      return
-    }
-
-    motionVelocityRef.current = Math.max(-28, Math.min(28, velocity))
-    const before = timeline.scrollTop
-    timeline.scrollTop = before + motionVelocityRef.current
-    if (timeline.scrollTop === before) {
-      motionVelocityRef.current = 0
-      timeline.classList.remove('is-moving')
-      return
-    }
-    motionFrameRef.current = window.requestAnimationFrame(advanceTimelineMotion)
-  }
-
-  const startTimelineMotion = () => {
-    const timeline = timelineRef.current
-    if (!timeline) return
-    timeline.classList.add('is-moving')
-    if (motionFrameRef.current === null) {
-      motionFrameRef.current = window.requestAnimationFrame(advanceTimelineMotion)
-    }
-  }
-
-  const handleTimelineWheel = (event: WheelEvent) => {
-    event.preventDefault()
-    const timeline = timelineRef.current
-    if (!timeline) return
-    const multiplier = event.deltaMode === WheelEvent.DOM_DELTA_LINE
-      ? 18
-      : event.deltaMode === WheelEvent.DOM_DELTA_PAGE
-        ? timeline.clientHeight
-        : 1
-    const delta = event.deltaY * multiplier
-    if (delta === 0) return
-
-    const impulse = Math.max(-22, Math.min(22, delta * .085))
-    const currentVelocity = motionVelocityRef.current
-    motionVelocityRef.current = Math.sign(impulse) !== Math.sign(currentVelocity) && currentVelocity !== 0
-      ? impulse
-      : Math.max(-28, Math.min(28, currentVelocity * .58 + impulse))
-    startTimelineMotion()
-  }
-
-  useEffect(() => {
-    const timeline = timelineRef.current
-    if (!timeline) return
-    timeline.addEventListener('wheel', handleTimelineWheel, { passive: false })
-    return () => timeline.removeEventListener('wheel', handleTimelineWheel)
-  }, [])
 
   const addTask = (event: FormEvent) => {
     event.preventDefault()
@@ -663,13 +531,9 @@ export default function App() {
         </section>
 
         <div className="timeline-stage">
-          <span className="focus-anchor" aria-hidden="true" />
           <section
             className="timeline"
-            aria-label="每日时间线，可用鼠标滚轮自由浏览事项"
-            ref={timelineRef}
-            onScroll={updateScrollFocus}
-            tabIndex={0}
+            aria-label="每日时间线"
           >
           {dayTasks.length === 0 ? (
             <div className="empty-state">
@@ -678,23 +542,17 @@ export default function App() {
               <p>扔进一件 10 分钟能开干的，马上开场。</p>
             </div>
           ) : dayTasks.map((task, index) => {
-            const distance = focusIndex < 0 ? 0 : Math.abs(index - focusIndex)
-            const focusScale = Math.max(.76, 1 - distance * .09)
-            const focusOpacity = Math.max(.3, 1 - distance * .28)
-            const isFocused = task.id === visibleFocusId
+            const isNext = task.id === nextTaskId
             return (
             <article
-              className={`task-row ${task.done ? 'is-done' : ''} ${isFocused ? 'is-next' : ''}`}
+              className={`task-row ${task.done ? 'is-done' : ''} ${isNext ? 'is-next' : ''}`}
               key={task.id}
-              data-task-id={task.id}
-              data-time-focus={task.id === nextTaskId ? 'true' : undefined}
-              aria-current={isFocused ? 'true' : undefined}
-              style={{ '--delay': `${index * 45}ms`, '--focus-scale': focusScale, '--focus-opacity': focusOpacity } as React.CSSProperties}
+              aria-current={isNext ? 'true' : undefined}
+              style={{ '--delay': `${index * 45}ms` } as React.CSSProperties}
             >
               <time>{task.time}</time>
               <div className="rail" aria-hidden="true"><span className={`node ${task.tone}`} /></div>
               <div className={`task-card ${task.tone}`}>
-                <NightSpeedLines className="task-frost-lines" />
                 <button className="task-main" onClick={() => toggleTask(task.id)} aria-label={`${task.done ? '取消完成' : '完成'}：${task.title}`}>
                   <span className="check-mark" aria-hidden="true">{task.done && <Check weight="bold" />}</span>
                   <span className="task-copy">

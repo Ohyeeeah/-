@@ -132,9 +132,8 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--focus); out
 
 .app-shell { position: relative; isolation: isolate; width: 100%; min-height: 100vh; margin: 0; padding: 18px clamp(28px, 4vw, 76px) 150px; }
 @media (min-width: 1181px) {
-  .app-shell.is-day { height: 100svh; min-height: 620px; overflow: hidden; padding-bottom: 82px; }
-  .app-shell.is-day main { height: calc(100svh - 156px); min-height: 464px; padding-top: clamp(32px, 5vh, 56px); align-items: stretch; }
-  .app-shell.is-day .timeline-stage { --stage-height: 100%; min-height: 0; }
+  .app-shell.is-day { min-height: 100svh; }
+  .app-shell.is-day main { padding-top: clamp(32px, 5vh, 56px); }
 }
 .night-speedlines { position: absolute; z-index: 0; inset: 0; display: block; width: 100%; height: 100%; overflow: hidden; pointer-events: none; opacity: 0; visibility: hidden; transition: opacity 720ms cubic-bezier(.16, 1, .3, 1), visibility 0s linear 720ms; }
 :root[data-theme='dark'] .night-speedlines { opacity: 1; visibility: visible; transition-delay: 80ms, 0s; }
@@ -184,13 +183,9 @@ main { display: grid; grid-template-columns: minmax(360px, 460px) minmax(0, 1fr)
 .progress-line:not(.has-progress) .progress-reveal { opacity: 0; }
 .progress-copy { display: flex; justify-content: space-between; margin-top: 10px; color: var(--muted); font-size: .78rem; font-variant-numeric: tabular-nums; }
 
-.timeline-stage { --stage-height: min(76vh, 740px); --focus-gutter: clamp(28px, 3vw, 48px); --focus-position: 50%; --timeline-pad-start: calc(var(--stage-height) / 2 - 64px); --timeline-pad-end: calc(var(--stage-height) / 2 - 64px); position: relative; width: 100%; height: var(--stage-height); justify-self: stretch; }
-.timeline { position: relative; z-index: 1; width: calc(100% + var(--focus-gutter)); height: 100%; margin-right: calc(var(--focus-gutter) * -1); padding-top: var(--timeline-pad-start); padding-bottom: var(--timeline-pad-end); padding-right: var(--focus-gutter); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; scroll-behavior: auto; touch-action: pan-y; }
-.timeline::-webkit-scrollbar { display: none; }
-.focus-anchor { position: absolute; top: var(--focus-position); left: 0; width: 0; height: 0; pointer-events: none; }
-.task-row { --delay: 0ms; --focus-scale: 1; --focus-opacity: 1; --completion-opacity: 1; position: relative; z-index: 1; display: grid; grid-template-columns: 54px 22px minmax(0, 1fr); min-height: 108px; opacity: calc(var(--focus-opacity) * var(--completion-opacity)); transform: scale(var(--focus-scale)); transform-origin: center center; transition: filter 160ms ease; animation: settle 520ms cubic-bezier(.16,1,.3,1) both; animation-delay: var(--delay); }
-.timeline.is-moving .task-row { will-change: transform, opacity; }
-.task-row:not(.is-next) { filter: saturate(.78); }
+.timeline-stage { --focus-gutter: clamp(28px, 3vw, 48px); position: relative; width: 100%; min-height: 0; justify-self: stretch; }
+.timeline { position: relative; z-index: 1; width: calc(100% + var(--focus-gutter)); margin-right: calc(var(--focus-gutter) * -1); padding: 0 var(--focus-gutter) 128px 0; }
+.task-row { --delay: 0ms; --completion-opacity: 1; position: relative; z-index: 1; display: grid; grid-template-columns: 54px 22px minmax(0, 1fr); min-height: 108px; opacity: var(--completion-opacity); animation: settle 360ms cubic-bezier(.16,1,.3,1) both; animation-delay: var(--delay); }
 .task-row time { padding-top: 14px; color: var(--muted); font-size: .78rem; font-weight: 600; font-variant-numeric: tabular-nums; }
 .rail { position: relative; display: flex; justify-content: center; }
 .rail::after { content: ''; position: absolute; top: 24px; bottom: -4px; width: 1px; background: var(--line); }
@@ -198,43 +193,26 @@ main { display: grid; grid-template-columns: minmax(360px, 460px) minmax(0, 1fr)
 .node { position: relative; z-index: 1; width: 11px; height: 11px; margin-top: 18px; border-radius: 50%; background: var(--sky-strong); box-shadow: 0 0 0 5px var(--paper); }
 .node.cream { background: var(--node-cream); }.node.leaf { background: var(--node-leaf); }.node.coral { background: var(--coral); }
 .task-card { position: relative; align-self: start; margin-bottom: 12px; border: 1px solid transparent; border-radius: 16px; color: var(--card-ink); background: var(--card-sky); overflow: hidden; box-shadow: var(--shadow); transition: transform 220ms cubic-bezier(.2,.8,.2,1), opacity 220ms ease; }
-.task-frost-lines { display: none; }
 .task-card.cream { background: var(--card-cream); }
 .task-card.leaf { background: var(--card-leaf); }
 .task-card.coral { background: var(--card-coral); }
 :root[data-theme='dark'] .task-card {
-  background: color-mix(in srgb, var(--card-sky) 78%, transparent);
+  /* A translucent surface is intentionally used here instead of per-card backdrop filters.
+     The latter forces costly re-sampling during native page scroll and was the source of jank. */
+  background: color-mix(in srgb, var(--card-sky) 86%, #071112 14%);
   border: 1px solid color-mix(in srgb, var(--card-sky) 38%, transparent);
   box-shadow: 0 18px 58px rgba(0, 0, 0, .3);
 }
-:root[data-theme='dark'] .task-frost-lines {
-  display: block;
-  position: absolute;
-  z-index: 0;
-  inset: -34%;
-  width: 168%;
-  height: 168%;
-  pointer-events: none;
-  opacity: .62;
-  visibility: visible;
-  filter: blur(22px) saturate(.82);
-  transform: scale(1.04);
-  transition: none;
-}
-:root[data-theme='dark'] .task-card > :not(.task-frost-lines) {
-  position: relative;
-  z-index: 1;
-}
 :root[data-theme='dark'] .task-card.cream {
-  background: color-mix(in srgb, var(--card-cream) 76%, transparent);
+  background: color-mix(in srgb, var(--card-cream) 84%, #10130a 16%);
   border-color: color-mix(in srgb, var(--card-cream) 36%, transparent);
 }
 :root[data-theme='dark'] .task-card.leaf {
-  background: color-mix(in srgb, var(--card-leaf) 78%, transparent);
+  background: color-mix(in srgb, var(--card-leaf) 86%, #071112 14%);
   border-color: color-mix(in srgb, var(--card-leaf) 38%, transparent);
 }
 :root[data-theme='dark'] .task-card.coral {
-  background: color-mix(in srgb, var(--card-coral) 76%, transparent);
+  background: color-mix(in srgb, var(--card-coral) 84%, #10130a 16%);
   border-color: color-mix(in srgb, var(--card-coral) 36%, transparent);
 }
 .task-card:hover { transform: translateY(-2px); }
@@ -307,7 +285,7 @@ main { display: grid; grid-template-columns: minmax(360px, 460px) minmax(0, 1fr)
 .history-empty h2 { margin: 20px 0 6px; color: var(--ink); font-size: 1.15rem; }
 .history-empty p { max-width: 32ch; margin: 0; line-height: 1.7; }
 
-@keyframes settle { from { opacity: 0; transform: translateY(14px) scale(calc(var(--focus-scale) * .97)); filter: blur(4px); } to { opacity: calc(var(--focus-opacity) * var(--completion-opacity)); transform: translateY(0) scale(var(--focus-scale)); filter: blur(0); } }
+@keyframes settle { from { opacity: 0; transform: translateY(10px); } to { opacity: var(--completion-opacity); transform: translateY(0); } }
 @keyframes orbit { to { transform: rotate(360deg); } }
 @keyframes breathe { 50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--coral) 12%, var(--paper)); } }
 @keyframes theme-turn { 0% { transform: rotate(-24deg) scale(.72); opacity: .35; } 100% { transform: rotate(0) scale(1); opacity: 1; } }
@@ -342,8 +320,8 @@ main { display: grid; grid-template-columns: minmax(360px, 460px) minmax(0, 1fr)
   .note-pad { margin-top: 22px; padding: 16px 17px 13px; }
   .note-pad textarea { min-height: 86px; max-height: 190px; }
   .progress-line { margin-top: 26px; }
-  .timeline-stage { --stage-height: min(68vh, 660px); --focus-gutter: 12px; --focus-position: 86px; --timeline-pad-start: 32px; --timeline-pad-end: clamp(320px, calc(68vh - 140px), 520px); margin-top: 28px; }
-  .timeline { width: 100%; margin-right: 0; }
+  .timeline-stage { --focus-gutter: 12px; margin-top: 28px; }
+  .timeline { width: 100%; margin-right: 0; padding-bottom: 128px; }
   .task-row { grid-template-columns: 46px 18px minmax(0, 1fr); min-height: 108px; }
   .task-main { padding: 14px 14px 8px; }
   .task-tools { padding-left: 42px; }
@@ -357,8 +335,8 @@ main { display: grid; grid-template-columns: minmax(360px, 460px) minmax(0, 1fr)
 
 @media (max-width: 720px) {
   .app-shell { padding-inline: 16px; }
-  .timeline-stage { --stage-height: clamp(560px, 76svh, 720px); --focus-position: 78px; --timeline-pad-start: 24px; --timeline-pad-end: clamp(428px, calc(76svh - 132px), 588px); width: calc(100% + 32px); margin-top: 20px; margin-inline: -16px; }
-  .timeline { padding-right: 8px; }
+  .timeline-stage { width: calc(100% + 32px); margin-top: 20px; margin-inline: -16px; }
+  .timeline { padding: 0 8px 128px 0; }
   .task-row { grid-template-columns: 42px 16px minmax(0, 1fr); }
   .task-row time { padding-left: 4px; font-size: .7rem; }
   .task-main { padding-inline: 13px; }
