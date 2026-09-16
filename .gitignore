@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.playwright-cli/
+output/
+.impeccable/review/
+public/fonts/*/

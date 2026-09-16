@@ -1,0 +1,20 @@
+{
+  "name": "培根斯的一天",
+  "short_name": "培根斯",
+  "description": "一条温柔、清晰的每日时间线。",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FFFDF9",
+  "theme_color": "#A5D6DB",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
